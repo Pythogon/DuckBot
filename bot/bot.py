@@ -15,6 +15,7 @@ class Bot(commands.Bot):
         return await bot.process_commands(message) # Process commands
 
 bot = Bot(command_prefix = c.prefix, help_command = None)
+bot.add_cog(cogs.Commanderror(bot))
 bot.add_cog(cogs.Count(bot))
 bot.add_cog(cogs.General(bot))
 bot.add_cog(cogs.Starboard(bot))
