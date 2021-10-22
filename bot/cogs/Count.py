@@ -12,6 +12,14 @@ class Count(commands.Cog):
         self.bot = bot 
         self._last_member = None
     
+    @commands.command()
+    async def record(self, ctx):
+        """
+        Shows the current count channel record.
+        """
+        record = dsf.dataStorageRead()["count"]["record"]
+        await ctx.send(f"The current count channel record is {record}.")
+
     @commands.Cog.listener()
     async def on_message(self, message):
         """
