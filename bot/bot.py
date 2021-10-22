@@ -1,6 +1,6 @@
 import discord
 
-import config as c # README.md for example config
+import config as c # README for example config
 import cogs # bot/cogs/ package
 
 from discord.ext import commands
@@ -15,5 +15,6 @@ class Bot(commands.Bot):
         return await bot.process_commands(message) # Process commands
 
 bot = Bot(command_prefix = c.prefix)
+bot.add_cog(cogs.Count(bot))
 bot.add_cog(cogs.General(bot))
 bot.run(c.token)
