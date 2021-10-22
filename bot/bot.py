@@ -15,5 +15,5 @@ class Bot(commands.Bot):
         return await bot.process_commands(message) # Process commands
 
 bot = Bot(command_prefix = c.prefix)
-
+bot.add_cog(cogs.General(bot))
 bot.run(c.token)
