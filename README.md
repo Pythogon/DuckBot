@@ -6,7 +6,7 @@ discord.py
     
 ## Example bot/config.py    
 ```py
-class Config():
-    prefix = "Your prefix"
-    token = "Your token"
+counting_channel = 123456780 # Your channel ID
+prefix = "Your prefix"
+token = "Your token"
 ```

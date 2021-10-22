@@ -1,6 +1,6 @@
 import discord
 
-from config import config as c # README.md for example config
+import config as c # README.md for example config
 import cogs # bot/cogs/ package
 
 from discord.ext import commands
