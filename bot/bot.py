@@ -8,7 +8,7 @@ from discord.ext import commands
 class Bot(commands.Bot):
     async def on_ready(self):
         print("Bot ready.") # Log restart
-        await bot.change_presence(activity = discord.Activity(name = f"these sick moves | v{c.version}", type = discord.ActivityType.watching)) # Set status
+        await bot.change_presence(activity = discord.Activity(name = f"and waiting | v{c.version}", type = discord.ActivityType.watching)) # Set status
     
     async def on_message(self, message):
         if message.author.bot: return # Reject bot user
