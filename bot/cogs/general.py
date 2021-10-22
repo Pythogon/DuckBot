@@ -1,6 +1,7 @@
 import discord
-
 import config as c
+import datastoragefunctions as dsf
+
 from discord.ext import commands
 
 class General(commands.Cog):
@@ -14,9 +15,10 @@ class General(commands.Cog):
         Custom help command, default looks shabby.
         """
         p = c.prefix # Abbreviation to save time 
-        embed = discord.Embed(title = "Help menu", color = c.embed_color) \
+        embed = discord.Embed(title = "Help menu", description = "<> indicates a required argument.", color = c.embed_color) \
         .set_thumbnail(url = ctx.me.avatar_url) \
         .add_field(name = "Commands", value = f"""{p}help: Shows this message.
+{p}metrics <user>: See stored information about a user.
 {p}ping: Check if the bot is connected.
 {p}record: Check the current counting channel record.""", inline = False) \
         .add_field(name = "Counting channel", value = f"""This bot provides a counting channel. This channel can be located at <#{c.counting_channel}>. To use the counting channel, you just need to type the number after the last number sent to the channel. Your message will be automatically deleted.""", inline = False) \
@@ -25,6 +27,17 @@ class General(commands.Cog):
         
         await ctx.send(embed = embed)
     
+    @commands.command()
+    async def metrics(self, ctx, user: discord.User):
+        userdata = dsf.userStorage("r", user.id)
+        embed = discord.Embed(title = f"Metrics for {user}", color = c.embed_color) \
+        .set_thumbnail(url = user.avatar_url) \
+        .add_field(name = "Counting", value = f"""Total number of messages in the counting channel: **{userdata["count"]["number"]}**
+Number of times failed in the counting channel: **{userdata["count"]["fails"]}**""", inline = False) \
+        .add_field(name = "Starboard", value = f"Total number of messages added to the starboard: **{userdata['starboard']['number']}**", inline = False) \
+        .set_footer(text = c.embed_footer_text) # Metric fetching embed
+        await ctx.send(embed = embed)
+
     @commands.command()
     async def ping(self, ctx):
         """

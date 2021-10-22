@@ -17,4 +17,5 @@ class Bot(commands.Bot):
 bot = Bot(command_prefix = c.prefix, help_command = None)
 bot.add_cog(cogs.Count(bot))
 bot.add_cog(cogs.General(bot))
+bot.add_cog(cogs.Starboard(bot))
 bot.run(c.token)
