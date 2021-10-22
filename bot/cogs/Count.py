@@ -31,6 +31,7 @@ class Count(commands.Cog):
         c_channel = message.channel # counting channel
         complete_data = dsf.dataStorageRead()
         lc_data = complete_data["count"]['last-count'] # last count data
+        userdata = dsf.userStorage("r", message.author.id)
 
         await message.delete() # Security measure to prevent people from unsending their message & breaking count 
 
@@ -56,15 +57,18 @@ class Count(commands.Cog):
                 embed.add_field(name = "This was a new record!", value = f"It beat the previous one by {difference}.")
                 complete_data["count"]["record"] = lc_data["number"]
             
+            userdata["count"]["fails"] += 1    
         else:
             lc_data['number'] += 1 # Increment number
             lc_data['member'] = message.author.id # Set last user
+            userdata["count"]["number"] += 1 
             complete_data["count"]["last-count"] = lc_data # Save last count data to complete data
 
             embed = discord.Embed(title = "Count", description = message.content, color = c.embed_color) \
             .set_author(name = message.author.name, icon_url = message.author.avatar_url) \
             .set_thumbnail(url = message.author.avatar_url) \
             .set_footer(text = c.embed_footer_text) # Construct an embed for the correct number 
-        
+
+        dsf.userStorage("w", message.author.id, data = userdata) # Write updated userdata
         dsf.dataStorageWrite(complete_data) # Write the complete data
         await c_channel.send(embed = embed) # Send to count channel

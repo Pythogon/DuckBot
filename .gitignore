@@ -131,3 +131,4 @@ dmypy.json
 # Configuration class
 bot/config.py
 bot/data_storage.json
+bot/user_storage.json

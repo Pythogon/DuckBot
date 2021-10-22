@@ -1,10 +1,10 @@
 # DuckBot
 A Python 3.7 Discord.py bot created for ASA.    
     
-## Requirements   
+### Requirements   
 discord.py    
     
-## Example bot/config.py    
+### Example bot/config.py    
 ```py
 counting_channel = 1234567890 # Your channel ID
 embed_color = 0x000000 # Your color of choice
@@ -16,8 +16,11 @@ version = "Version name"
 
 embed_footer_text = "Your choice of embed footer"
 ```    
-    
-## Example data_storage.json
+
+## Storage file templates    
+These are files that store user and global variables.    
+       
+### data_storage.json
 ```json
 {
     "counting": {
@@ -28,3 +31,18 @@ embed_footer_text = "Your choice of embed footer"
         "record": 0
     }
 }
+```
+### user_storage.json
+```json
+{
+    "default": {
+        "count": {
+            "number": 0,
+            "fails": 0
+        },
+        "starboard": {
+            "number": 0
+        }
+    }
+}
+```
