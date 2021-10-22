@@ -10,4 +10,7 @@ class General(commands.Cog):
     
     @commands.command()
     async def ping(self, ctx):
+        """
+        Checks if the bot is connected.
+        """
         await ctx.send("Pong!")
