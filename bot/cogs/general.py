@@ -18,12 +18,15 @@ class General(commands.Cog):
         p = c.prefix # Abbreviation to save time 
         embed = discord.Embed(title = "Help menu", description = "<> indicates a required argument.", color = c.embed_color) \
         .set_thumbnail(url = ctx.me.avatar_url) \
-        .add_field(name = "Commands", value = f"""{p}help: Shows this message.
+        .add_field(name = "Commands", value = f"""{p}dayschedule: See the schedule for daily notifications.
+{p}help: Shows this message.
 {p}metrics <user>: See stored information about a user.
 {p}ping: Check if the bot is connected.
-{p}record: Check the current counting channel record.""", inline = False) \
-        .add_field(name = "Counting channel", value = f"""This bot provides a counting channel. This channel can be located at <#{c.counting_channel}>. To use the counting channel, you just need to type the number after the last number sent to the channel. Your message will be automatically deleted.""", inline = False) \
-        .add_field(name = "Starboard", value = f"""This bot also provides a starboard for you to use! The starboard channel can be found at <#{c.star_channel}>. To get a message onto the starboard channel, just react with a ⭐! If the message gets {c.star_quota} ⭐s, it will be automatically put onto the starboard.""", inline = False) \
+{p}record: Check the current counting channel record.
+{p}weekschedule: See the shceduled for weekly notifications.""", inline = False) \
+        .add_field(name = "Counting channel", value = f"This bot provides a counting channel. This channel can be located at <#{c.counting_channel}>. To use the counting channel, you just need to type the number after the last number sent to the channel. Your message will be automatically deleted.", inline = False) \
+        .add_field(name = "Notifications", value = f"This bot will notify you when it's your turn to take out the trash or to do the dishes. The notification channel is at <#{c.notification_channel}>.") \
+        .add_field(name = "Starboard", value = f"This bot also provides a starboard for you to use! The starboard channel can be found at <#{c.star_channel}>. To get a message onto the starboard channel, just react with a ⭐! If the message gets {c.star_quota} ⭐s, it will be automatically put onto the starboard.", inline = False) \
         .set_footer(text = c.embed_footer_text) # Very large help embed
         
         await ctx.send(embed = embed)

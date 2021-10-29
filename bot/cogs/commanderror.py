@@ -22,6 +22,5 @@ class Commanderror(commands.Cog):
 
         else:
             embed.add_field(name = error, value = "If the error persists, please contact Ash.")
-            print(error)
         
         return await ctx.send(embed = embed)
