@@ -32,7 +32,7 @@ These are files that store user and global variables.
         }, 
     "record": 6
 },
-"dishes":
+"day-notifications":
     {
         "last-time": 0,
         "message": "Please do the dishes today.",

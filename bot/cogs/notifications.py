@@ -34,26 +34,26 @@ class Notifications(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
-        self.notifier.start()
+        self.day_notifier.start()
     
     def cog_unload(self):
-        self.notifier.cancel()
+        self.day_notifier.cancel()
 
     @tasks.loop(minutes = 30)
-    async def notifier(self):
+    async def day_notifier(self):
         """
         Notifier loop for executing every day
         """
         await self.bot.wait_until_ready() # Because we're using send and get_channel later
-        print("Running cogs.Notifications.notifier() loop") # System notification
+        print("Running cogs.Notifications.day_notifier() loop") # System notification
         all_data = dsf.dataStorageRead()
-        notifications_data = all_data["notifications"] # Abbreviate
+        notifications_data = all_data["day-notifications"] # Abbreviate
         if (time.time() - notifications_data["last-time"]) < 86400: # 86400 seconds in a day
-            return print("cogs.Notifications.notifier() terminated: not been 86400s")
+            return print("cogs.Notifications.day_notifier() terminated: not been 86400s")
 
         day = datetime.datetime.today().weekday() # Get weekday index for schedule lookup
         if notifications_data["schedule"][day] == []:
-            return print("cogs.Notifications.notifier() terminated: no-one to mention") # Cancel out on days where there's no-one to notify
+            return print("cogs.Notifications.day_notifier() terminated: no-one to mention") # Cancel out on days where there's no-one to notify
         
         out_string = ""
         for user_id in notifications_data["schedule"][day]:
@@ -63,31 +63,34 @@ class Notifications(commands.Cog):
         channel = self.bot.get_channel(c.notification_channel) 
         await channel.send(out_string) # Send notification message to config.notification_channel
 
-        all_data["notifications"]["last-time"] = round(time.time()) # Change last time that loop executed successfully
+        all_data["day-notifications"]["last-time"] = round(time.time()) # Change last time that loop executed successfully
         dsf.dataStorageWrite(all_data) # Save to database
-        print(f"cogs.Notifications.notifier() complete. output: {out_string}")
+        print(f"cogs.Notifications.day_notifier() complete. output: {out_string}")
         
     @commands.group()
-    async def schedule(self, ctx):
+    async def dayschedule(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(f"Correct usage is {c.prefix}schedule add|list|remove.")
 
-    @schedule.command(name = "add")
-    async def schedule_add(self, ctx, day_string, user: discord.User):
+    @dayschedule.command(name = "add")
+    async def day_schedule_add(self, ctx, day_string, user: discord.User):
         print(f"User {ctx.author.id} used schedule add. args: {day_string}, {user.id}")
         all_data = dsf.dataStorageRead()
+
         day_index = day_to_index(day_string) # take 3 letter day code and convert into index for notifications schedule
         if day_index is None:
             return await ctx.send("You have entered an invalid day. Valid days: MON, TUE, WED, THU, FRI, SAT, SUN.") # Catch invalid day
-        if user.id in all_data["notifications"]["schedule"][day_index]:
+        if user.id in all_data["day-notifications"]["schedule"][day_index]:
             return await ctx.send("That user is already assigned to this day.") # Duplicate entries into schedule day would make dupe pings
-        all_data["notifications"]["schedule"][day_index].append(user.id) # Add user id to schedule day array for easier mentioning
+
+        all_data["day-notifications"]["schedule"][day_index].append(user.id) # Add user id to schedule day array for easier mentioning
         dsf.dataStorageWrite(all_data) # Save to database
         return await ctx.send(f"Success! {user.name} has been assigned to {day_string.upper()}.")
 
-    @schedule.command(name = "list")
-    async def schedule_list(self, ctx): 
-        schedule_data = dsf.dataStorageRead()["notifications"]["schedule"] # Abbreviate
+    @dayschedule.command(name = "list")
+    async def day_schedule_list(self, ctx): 
+        print(f"User {ctx.author.id} used schedule list. args: None")
+        schedule_data = dsf.dataStorageRead()["day-notifications"]["schedule"] # Abbreviate
         out_string = "Notification schedule:\n"
 
         for x in range(len(schedule_data)):
@@ -100,4 +103,19 @@ class Notifications(commands.Cog):
             out_string += "\n"
 
         await ctx.send(out_string)
+
+    @dayschedule.command(name = "remove")
+    async def day_schedule_remove(self, ctx, day_string, user: discord.User):
+        print(f"User {ctx.author.id} used schedule remove. args: {day_string}, {user.id}")
+        all_data = dsf.dataStorageRead() # Data read from database
+
+        day_index = day_to_index(day_string) # convert day code to index
+        if day_index is None:
+            return await ctx.send("You have entered an invalid day. Valid days: MON, TUE, WED, THU, FRI, SAT, SUN.") # Catch invalid day
+        if user.id not in all_data["day-notifications"]["schedule"][day_index]: 
+            return await ctx.send("That user is not assigned to this day.") # Attempting to remove a user who doesn't exist may cause problems
+        all_data["day-notifications"]["schedule"][day_index].remove(user.id) # Remove user from schedule
+        dsf.dataStorageWrite(all_data)
+        await ctx.send(f"Success! {user.name} has been removed from {day_string.upper()}")
+
 
