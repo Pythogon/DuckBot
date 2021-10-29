@@ -17,7 +17,7 @@ def dataStorageWrite(data):
     Data storage writer, accepts only a whole data file, please do not send partial data
     """
     with open(DATA_STORAGE, "w") as file:
-        json.dump(data, file)
+        json.dump(data, file, indent=4)
 
 def userStorage(wr, user, data = None):
     """
@@ -33,4 +33,4 @@ def userStorage(wr, user, data = None):
     elif wr == "w":
         with open(USER_STORAGE, "w") as file:
             all_users[str(user)] = data
-            json.dump(all_users, file)
+            json.dump(all_users, file, indent=4)
