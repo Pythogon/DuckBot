@@ -17,6 +17,7 @@ class Count(commands.Cog):
         """
         Shows the current count channel record.
         """
+        print(f"User {ctx.author.id} used record. args: None")
         record = dsf.dataStorageRead()["count"]["record"]
         await ctx.send(f"The current count channel record is {record}.")
 
@@ -27,7 +28,8 @@ class Count(commands.Cog):
         """
         if message.author.bot: return # bots could interfere
         if message.channel.id != c.counting_channel: return # this handler is only for counting channel
-        
+
+        print(f"User {message.author.id} triggered cogs.Count.on_message(). message: {message.content}")
         c_channel = message.channel # counting channel
         complete_data = dsf.dataStorageRead()
         lc_data = complete_data["count"]['last-count'] # last count data
@@ -40,6 +42,7 @@ class Count(commands.Cog):
         if message.author.id == lc_data['member']: fail_code = 2 # same member twice fail
 
         if fail_code is not None:
+            print(f"User {message.author.id} has a non-zero fail_code. fail_code: {fail_code}")
             reason = {
                 1: "That wasn't the next number!", 
                 2: "You aren't allowed to send two numbers in a row."

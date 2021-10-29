@@ -14,6 +14,7 @@ class General(commands.Cog):
         """
         Custom help command, default looks shabby.
         """
+        print(f"User {ctx.author.id} used help. args: None")
         p = c.prefix # Abbreviation to save time 
         embed = discord.Embed(title = "Help menu", description = "<> indicates a required argument.", color = c.embed_color) \
         .set_thumbnail(url = ctx.me.avatar_url) \
@@ -29,6 +30,7 @@ class General(commands.Cog):
     
     @commands.command()
     async def metrics(self, ctx, user: discord.User):
+        print(f"User {ctx.author.id} used metrics. args: {user.id}")
         userdata = dsf.userStorage("r", user.id)
         embed = discord.Embed(title = f"Metrics for {user}", color = c.embed_color) \
         .set_thumbnail(url = user.avatar_url) \
@@ -43,4 +45,5 @@ Number of times failed in the counting channel: **{userdata["count"]["fails"]}**
         """
         Checks if the bot is connected.
         """
+        print(f"User {ctx.author.id} used ping. args: None")
         await ctx.send("Pong!")
