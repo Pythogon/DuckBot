@@ -1,5 +1,6 @@
 import datetime
 import discord
+import re
 import time
 
 import config as c
@@ -112,7 +113,7 @@ class Notifications(commands.Cog):
     @commands.group()
     async def dayschedule(self, ctx):
         if ctx.invoked_subcommand is None:
-            print(f"User {ctx.author.id} used schedule list. args: None")
+            print(f"User {ctx.author.id} used dayschedule list. args: None")
             schedule_data = dsf.dataStorageRead()["day-notifications"]["schedule"] # Abbreviate
             out_string = "Notification schedule:\n"
 
@@ -129,7 +130,7 @@ class Notifications(commands.Cog):
 
     @dayschedule.command(name = "add")
     async def day_schedule_add(self, ctx, day_string, user: discord.User):
-        print(f"User {ctx.author.id} used schedule add. args: {day_string}, {user.id}")
+        print(f"User {ctx.author.id} used dayschedule add. args: {day_string}, {user.id}")
         all_data = dsf.dataStorageRead()
 
         day_index = day_to_index(day_string) # take 3 letter day code and convert into index for notifications schedule
@@ -144,7 +145,7 @@ class Notifications(commands.Cog):
 
     @dayschedule.command(name = "remove")
     async def day_schedule_remove(self, ctx, day_string, user: discord.User):
-        print(f"User {ctx.author.id} used schedule remove. args: {day_string}, {user.id}")
+        print(f"User {ctx.author.id} used dayschedule remove. args: {day_string}, {user.id}")
         all_data = dsf.dataStorageRead() # Data read from database
 
         day_index = day_to_index(day_string) # convert day code to index
@@ -159,25 +160,29 @@ class Notifications(commands.Cog):
     @commands.group()
     async def weekschedule(self, ctx):
         if ctx.invoked_subcommand == None:
+            print(f"User {ctx.author.id} used weekschedule list.")
             notif_data = dsf.dataStorageRead()["week-notifications"]
             who = notif_data["last-index"] + 1
             if who == len(notif_data["schedule"]): who = 0
             await ctx.send(f"The next weekly notification will be for <@{notif_data['schedule'][who]}>.") # Quick information
     
-    @weekschedule.command(name = "add")
-    async def week_schedule_add(self, ctx, user: discord.User):
-        all_data = dsf.dataStorageRead()
-        if user.id in all_data["week-notifications"]["schedule"]: 
-            return await ctx.send("That user is already in the schedule.") # No dupe entries
-        all_data["week-notifications"]["schedule"].append(user.id) # Add to database
-        dsf.dataStorageWrite(all_data) # Write json
-        await ctx.send("Success! The user has been added to the schedule.")
-    
-    @weekschedule.command(name = "remove")
-    async def week_schedule_remove(self, ctx, user: discord.User):
-        all_data = dsf.dataStorageRead()
-        if user.id not in all_data["week-notifications"]["schedule"]:
-            return await ctx.send("That user is not in the schedule.") # Can't list.remove a nonexistent user
-        all_data["week-notifications"]["schedule"].remove(user.id)
-        dsf.dataStorageWrite(all_data) # Write json
-        await ctx.send("Success! The user has been removed from the schedule.")
+    @weekschedule.command(name = "set")
+    async def week_schedule_set(self, ctx, *args):
+        print(f"User {ctx.author.id} used weekschedule set. args: {args}")
+        all_data = dsf.dataStorageRead() # Read data
+        mention_pattern = r"[<>@!]" # Regular expression of mention filler characters
+        user_ids = []
+
+        for x in args:
+            mod_x = re.sub(mention_pattern, "", x)  # Remove <@> 
+            try: 
+                int(mod_x) 
+            except:
+                return await ctx.send("One or more of your arguments is not a user mention.") # Needs to be a user mention for the scheduler
+            user_ids.append(mod_x) # add to user user_ids
+        
+        all_data["week-notifications"]["schedule"] = user_ids # Set the schedule for week-notifications
+        all_data["week-notifications"]["last-index"] = (len(user_ids) - 1) # Ensure the next user to be notified is the first in args
+        dsf.dataStorageWrite(all_data) # Save to database
+
+        await ctx.send(f"Done! The next user to be notified will be {args[0]}.")
