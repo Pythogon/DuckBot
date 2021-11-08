@@ -31,20 +31,6 @@ These are files that store user and global variables.
             "member": 0
         }, 
     "record": 6
-},
-"day-notifications":
-    {
-        "last-time": 0,
-        "message": "Please do the dishes today.",
-        "schedule": [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            []
-        ]
     }
 }
 ```
