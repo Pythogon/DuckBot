@@ -125,8 +125,8 @@ class Notifications(commands.Cog):
                 for user in schedule_data[x]:
                     out_string += f"<@{user}>"
                 out_string += "\n"
-
-        await ctx.send(out_string)
+                
+            await ctx.send(out_string)
 
     @dayschedule.command(name = "add")
     async def day_schedule_add(self, ctx, day_string, user: discord.User):
