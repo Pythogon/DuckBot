@@ -1,6 +1,7 @@
 import discord
 import config as c
-from discord.ext import commands   
+from discord.ext import commands
+
 
 class Commanderror(commands.Cog):
     def __init__(self, bot):
@@ -15,12 +16,14 @@ class Commanderror(commands.Cog):
         except:
             print(f"Exception in {ctx.command}: {error}")
 
-        embed = discord.Embed(title = "An error has occured!", color = 0x000000).set_footer(text = c.embed_footer_text).set_thumbnail(url = ctx.me.avatar_url)
+        embed = discord.Embed(title="An error has occurred!", color=0x000000).set_footer(
+            text=c.embed_footer_text).set_thumbnail(url=ctx.me.avatar_url)
 
         if isinstance(error, commands.MissingRequiredArgument):
-            embed.add_field(name = f"You are missing a required argument.", value = "If the error persists, please contact Ash.")
+            embed.add_field(name=f"You are missing a required argument.",
+                            value="If the error persists, please contact Ash.")
 
         else:
-            embed.add_field(name = error, value = "If the error persists, please contact Ash.")
-        
-        return await ctx.send(embed = embed)
+            embed.add_field(name=error, value="If the error persists, please contact Ash.")
+
+        return await ctx.send(embed=embed)

@@ -5,21 +5,24 @@ DSF_PATH = os.path.join(os.path.dirname(__file__))
 DATA_STORAGE = os.path.join(DSF_PATH, "data_storage.json")
 USER_STORAGE = os.path.join(DSF_PATH, "user_storage.json")
 
-def dataStorageRead():
+
+def datastorageread():
     """
     Simple data_storage.json read (example of data_storage.json in README)
     """
     with open(DATA_STORAGE, "r") as file:
         return json.load(file)
-    
-def dataStorageWrite(data):
+
+
+def datastoragewrite(data):
     """
     Data storage writer, accepts only a whole data file, please do not send partial data
     """
     with open(DATA_STORAGE, "w") as file:
         json.dump(data, file, indent=4)
 
-def userStorage(wr, user, data = None):
+
+def userstorage(wr, user, data=None):
     """
     All in one user_storage.json reader
     """
