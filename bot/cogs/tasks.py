@@ -25,8 +25,8 @@ class Tasks(commands.Cog):
         """
         await self.bot.wait_until_ready()
         print("Running cogs.Tasks.notifier()")
-        #if dt.now().hour != c.notify_hour:
-        #    return print("Aborting cogs.Tasks.notifier(): Not notify_hour")
+        if dt.now().hour != c.notify_hour:
+            return print("Aborting cogs.Tasks.notifier(): Not notify_hour")
         data = dsf.datastorageread()
         today = data["tasks"][dt.today().weekday()]
         if not today:
